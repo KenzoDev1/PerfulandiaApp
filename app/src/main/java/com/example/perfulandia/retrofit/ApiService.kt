@@ -1,21 +1,24 @@
 package com.example.perfulandia.retrofit
 
 import com.example.perfulandia.catalogo.Product
-import com.example.perfulandia.model.User
+import com.example.perfulandia.model.AuthResponse
+import com.example.perfulandia.model.LoginRequest
+import com.example.perfulandia.model.RegisterRequest
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Headers
+import retrofit2.http.POST
 
 interface ApiService {
 
-    @Headers(
-        "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2aWZrendyaGVucHpuaHRqdGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNzExODMsImV4cCI6MjA3OTc0NzE4M30.V_wYJcosi3gdiMNs7F7CQUswZsYfW1sjzC0FKJY37Gc",
-        "Authorization: "
-    )
-
-    @GET("products")
+    // --- PRODUCTOS ---
+    @GET("rest/v1/products")
     suspend fun getProducts(): Response<List<Product>>
 
-    @GET("clients")
-    suspend fun getClients(): Response<List<User>>
+    // --- AUTENTICACIÓN ---
+    @POST("auth/v1/signup")
+    suspend fun signUp(@Body request: RegisterRequest): Response<AuthResponse>
+
+    @POST("auth/v1/token?grant_type=password")
+    suspend fun signIn(@Body request: LoginRequest): Response<AuthResponse>
 }

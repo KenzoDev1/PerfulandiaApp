@@ -24,9 +24,9 @@ import com.example.perfulandia.ui.theme.PerfulandiaTheme
 fun UserListScreen() {
     // Datos de ejemplo
     val users = listOf(
-        User(1, "Carlos Bittner", "carlos@email.com", "Admin"),
-        User(2, "Vicente Alarcón", "vicente@email.com", "Cliente"),
-        User(3, "Francisco Aranguiz", "francisco@email.com", "Vendedor"),
+        User("1", "Carlos Bittner", "carlos@email.com", "Admin"),
+        User("2", "Vicente Alarcón", "vicente@email.com", "Cliente"),
+        User("3", "Francisco Aranguiz", "francisco@email.com", "Vendedor"),
     )
 
     var searchQuery by remember { mutableStateOf("") }

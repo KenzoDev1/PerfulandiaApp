@@ -7,25 +7,36 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    // URL base de tu API Supabase
-    private const val BASE_URL = "https://avifkzwrhenpznhtjtln.supabase.co"
+    // TU URL REAL DE SUPABASE
+    private const val BASE_URL = "https://ssxspldiwyaednmnooyy.supabase.co/"
+    // TU CLAVE REAL DE SUPABASE
+    private const val SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzeHNwbGRpd3lhZWRubW5vb3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMjYxNzcsImV4cCI6MjA3OTgwMjE3N30.csWkJ9Bi0xvoh7IqLiKv1GxRyaoTn0oyQVqKDJOg68s"
 
-    // Interceptor para ver peticiones en Logcat
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY  // Muestra request y response completos
+    // INTERCEPTOR: Inyecta la clave en cada petición automáticamente
+    private val authInterceptor = okhttp3.Interceptor { chain ->
+        val originalRequest = chain.request()
+        val newRequest = originalRequest.newBuilder()
+            .addHeader("apikey", SUPABASE_KEY)
+            .addHeader("Authorization", "Bearer $SUPABASE_KEY")
+            .addHeader("Content-Type", "application/json")
+            .build()
+        chain.proceed(newRequest)
     }
 
-    // Cliente HTTP con el interceptor
-    private val httpClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor).build() // Agrega el logger
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
 
-    // Instancia de Retrofit configurada
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)                              // URL base
-        .client(httpClient)                             // Cliente con logging
-        .addConverterFactory(GsonConverterFactory.create())  // JSON → Kotlin
+    private val httpClient = OkHttpClient.Builder()
+        .addInterceptor(authInterceptor)
+        .addInterceptor(loggingInterceptor)
         .build()
 
-    // ApiService listo para usar
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(httpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
     val apiService: ApiService = retrofit.create(ApiService::class.java)
 }
