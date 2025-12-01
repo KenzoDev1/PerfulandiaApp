@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.perfulandia.model.Product
+import com.example.perfulandia.catalogo.Product
 import com.example.perfulandia.ui.navigation.AppRoutes
 import com.example.perfulandia.ui.theme.Gold
 import com.example.perfulandia.ui.theme.GoldDim

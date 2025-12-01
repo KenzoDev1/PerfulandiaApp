@@ -1,6 +1,5 @@
-package com.example.duocappmoviles003d.network
+package com.example.perfulandia.retrofit
 
-import ApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

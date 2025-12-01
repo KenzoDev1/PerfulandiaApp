@@ -1,4 +1,5 @@
-package com.example.perfulandia.model
+package com.example.perfulandia.catalogo
+
 import com.google.gson.annotations.SerializedName
 
 data class Product (

@@ -2,7 +2,7 @@ package com.example.perfulandia.ui.product
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.perfulandia.model.Product
+import com.example.perfulandia.catalogo.Product
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

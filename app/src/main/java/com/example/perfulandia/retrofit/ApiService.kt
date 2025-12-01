@@ -1,4 +1,6 @@
-import com.example.perfulandia.model.Product
+package com.example.perfulandia.retrofit
+
+import com.example.perfulandia.catalogo.Product
 import com.example.perfulandia.model.User
 import retrofit2.Response
 import retrofit2.http.GET
