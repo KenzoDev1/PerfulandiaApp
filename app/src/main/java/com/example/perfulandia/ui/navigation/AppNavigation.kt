@@ -21,15 +21,37 @@ object AppRoutes {
     const val ABOUT_SCREEN = "about"
     const val CONTACT_SCREEN = "contact"
     const val PRODUCT_DETAIL_SCREEN = "product_detail"
+    const val LOGIN_SCREEN = "login"
+    const val REGISTER_SCREEN = "register"
 }
 
 @Composable
 fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
         navController = navController,
-        startDestination = AppRoutes.HOME_SCREEN,
+        startDestination = AppRoutes.LOGIN_SCREEN,
         modifier = modifier // Aplica el padding del Scaffold
     ) {
+        composable(route = AppRoutes.LOGIN_SCREEN) {
+            com.example.perfulandia.ui.auth.LoginScreen(
+                onNavigateToRegister = { navController.navigate(AppRoutes.REGISTER_SCREEN) },
+                onLoginSuccess = {
+                    navController.navigate(AppRoutes.HOME_SCREEN) {
+                        popUpTo(AppRoutes.LOGIN_SCREEN) { inclusive = true }
+                    }
+                }
+            )
+        }
+        composable(route = AppRoutes.REGISTER_SCREEN) {
+            com.example.perfulandia.ui.auth.RegistrationScreen(
+                onNavigateToLogin = { navController.navigate(AppRoutes.LOGIN_SCREEN) },
+                onRegistrationSuccess = {
+                    navController.navigate(AppRoutes.HOME_SCREEN) {
+                        popUpTo(AppRoutes.LOGIN_SCREEN) { inclusive = true }
+                    }
+                }
+            )
+        }
         composable(route = AppRoutes.HOME_SCREEN) {
             HomeScreen(navController)
         }

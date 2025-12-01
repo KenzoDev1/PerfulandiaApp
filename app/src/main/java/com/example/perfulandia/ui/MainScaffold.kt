@@ -31,53 +31,61 @@ fun MainScaffold() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    // Determinamos si estamos en una pantalla de autenticación
+    val isAuthScreen = currentRoute == AppRoutes.LOGIN_SCREEN || currentRoute == AppRoutes.REGISTER_SCREEN
+
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = !isAuthScreen, // Deshabilitar gestos del drawer en login/registro
         drawerContent = {
-            ModalDrawerSheet {
-                // 3. Contenido del menú lateral (los botones)
-                Text("Perfulandia", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
+            if (!isAuthScreen) { // Opcional: no mostrar contenido si no se debe
+                ModalDrawerSheet {
+                    // 3. Contenido del menú lateral (los botones)
+                    Text("Perfulandia", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
 
-                NavigationDrawerItem(
-                    label = { Text("Inicio") },
-                    selected = currentRoute == AppRoutes.HOME_SCREEN,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        navController.navigate(AppRoutes.HOME_SCREEN)
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text("Nosotros") },
-                    selected = currentRoute == AppRoutes.ABOUT_SCREEN,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        navController.navigate(AppRoutes.ABOUT_SCREEN)
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text("Contacto") },
-                    selected = currentRoute == AppRoutes.CONTACT_SCREEN,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        navController.navigate(AppRoutes.CONTACT_SCREEN)
-                    }
-                )
+                    NavigationDrawerItem(
+                        label = { Text("Inicio") },
+                        selected = currentRoute == AppRoutes.HOME_SCREEN,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            navController.navigate(AppRoutes.HOME_SCREEN)
+                        }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Nosotros") },
+                        selected = currentRoute == AppRoutes.ABOUT_SCREEN,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            navController.navigate(AppRoutes.ABOUT_SCREEN)
+                        }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Contacto") },
+                        selected = currentRoute == AppRoutes.CONTACT_SCREEN,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            navController.navigate(AppRoutes.CONTACT_SCREEN)
+                        }
+                    )
+                }
             }
         }
     ) {
         // 4. El Scaffold principal que contiene la TopBar y el contenido de las pantallas
         Scaffold(
             topBar = {
-                PerfulandiaTopBar(
-                    onMenuClick = {
-                        // El botón de hamburguesa AHORA SIEMPRE abre el menú
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    },
-                    onSearchClick = { navController.navigate(AppRoutes.SEARCH_SCREEN) },
-                    onCartClick = { navController.navigate(AppRoutes.CART_SCREEN) }
-                )
+                if (!isAuthScreen) { // Solo mostrar TopBar si NO estamos en login/registro
+                    PerfulandiaTopBar(
+                        onMenuClick = {
+                            // El botón de hamburguesa AHORA SIEMPRE abre el menú
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        },
+                        onSearchClick = { navController.navigate(AppRoutes.SEARCH_SCREEN) },
+                        onCartClick = { navController.navigate(AppRoutes.CART_SCREEN) }
+                    )
+                }
             }
         ) { paddingValues ->
             // 5. Aquí se mostrarán todas tus pantallas
