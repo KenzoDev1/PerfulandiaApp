@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PerfulandiaTheme {
-                // Aquí llamamos a nuestro nuevo contenedor principal
+                // MainScaffold contiene AppNavigation, que inicia en LoginScreen
                 MainScaffold()
             }
         }
