@@ -91,6 +91,7 @@ fun MainScaffold(
         }
     ) {
         Scaffold(
+            containerColor = androidx.compose.ui.graphics.Color.Transparent,
             topBar = {
                 PerfulandiaTopBar(
                     onMenuClick = { scope.launch { drawerState.open() } },

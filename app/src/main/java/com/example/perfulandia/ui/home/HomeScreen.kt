@@ -23,13 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.perfulandia.catalogo.Product
 import com.example.perfulandia.ui.navigation.AppRoutes
 import com.example.perfulandia.ui.theme.Gold
 import com.example.perfulandia.ui.theme.GoldDim
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 
 @Composable
 fun HomeScreen(
@@ -40,44 +37,48 @@ fun HomeScreen(
     val products by viewModel.products.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
+    com.example.perfulandia.ui.components.BackgroundWrapper(
+        backgroundImageId = com.example.perfulandia.R.drawable.background_collection
+    ) {
+        Scaffold(
+            containerColor = Color.Transparent
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Header / Title
-            Text(
-                text = "Perfulandia",
-                style = MaterialTheme.typography.displaySmall,
-                color = Gold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = "Exclusive Fragrances",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
+                // Header / Title
+                Text(
+                    text = "Perfulandia",
+                    style = MaterialTheme.typography.displaySmall,
+                    color = Gold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Perfumes y Fragancias",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
 
-            // Lógica de carga: Spinner o Lista
-            if (isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Gold)
-                }
-            } else {
-                if (products.isEmpty()) {
+                // Lógica de carga: Spinner o Lista
+                if (isLoading) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("No hay productos disponibles.", color = Color.Gray)
+                        CircularProgressIndicator(color = Gold)
                     }
                 } else {
-                    // Pasamos la lista real 'products' a la grilla
-                    ProductGrid(products = products, navController = navController)
+                    if (products.isEmpty()) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text("No hay productos disponibles.", color = Color.Gray)
+                        }
+                    } else {
+                        // Pasamos la lista real 'products' a la grilla
+                        ProductGrid(products = products, navController = navController)
+                    }
                 }
             }
         }

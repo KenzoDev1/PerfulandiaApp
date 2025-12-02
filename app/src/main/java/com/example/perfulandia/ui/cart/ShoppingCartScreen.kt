@@ -17,10 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.perfulandia.model.CartItem
 import com.example.perfulandia.ui.theme.Gold
@@ -33,37 +31,41 @@ fun ShoppingCartScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when (val state = uiState) {
-                is CartUiState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = Gold
-                    )
-                }
-                is CartUiState.Error -> {
-                    Text(
-                        text = state.message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                is CartUiState.Success -> {
-                    if (state.items.isEmpty()) {
-                        EmptyCartView()
-                    } else {
-                        CartContent(
-                            items = state.items,
-                            onQuantityChange = viewModel::updateQuantity,
-                            onRemoveItem = viewModel::removeItem
+    com.example.perfulandia.ui.components.BackgroundWrapper(
+        backgroundImageId = com.example.perfulandia.R.drawable.background_collection
+    ) {
+        Scaffold(
+            containerColor = Color.Transparent
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                when (val state = uiState) {
+                    is CartUiState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = Gold
                         )
+                    }
+                    is CartUiState.Error -> {
+                        Text(
+                            text = state.message,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                    is CartUiState.Success -> {
+                        if (state.items.isEmpty()) {
+                            EmptyCartView()
+                        } else {
+                            CartContent(
+                                items = state.items,
+                                onQuantityChange = viewModel::updateQuantity,
+                                onRemoveItem = viewModel::removeItem
+                            )
+                        }
                     }
                 }
             }

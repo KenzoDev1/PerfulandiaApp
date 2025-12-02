@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.perfulandia.ui.theme.PerfulandiaTheme
+import com.example.perfulandia.ui.components.BackgroundWrapper
+import com.example.perfulandia.R
 
 @Composable
 fun ContactScreen() {
@@ -16,23 +18,25 @@ fun ContactScreen() {
     var subject by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text("Contacto", style = MaterialTheme.typography.headlineMedium)
-        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = subject, onValueChange = { subject = it }, label = { Text("Asunto") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = message, onValueChange = { message = it }, label = { Text("Mensaje") }, modifier = Modifier
-            .fillMaxWidth()
-            .height(120.dp))
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
-            Text("Enviar")
+    BackgroundWrapper(backgroundImageId = R.drawable.background_elegant) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Contacto", style = MaterialTheme.typography.headlineMedium)
+            OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = subject, onValueChange = { subject = it }, label = { Text("Asunto") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = message, onValueChange = { message = it }, label = { Text("Mensaje") }, modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+                Text("Enviar")
+            }
         }
     }
 }
