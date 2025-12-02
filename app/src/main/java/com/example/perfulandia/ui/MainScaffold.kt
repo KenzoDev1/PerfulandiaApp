@@ -1,7 +1,9 @@
 package com.example.perfulandia.ui
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -21,74 +23,82 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScaffold() {
-    // 1. Controladores para la navegacion y el menu lateral
+fun MainScaffold(
+    onSignOut: () -> Unit // Recibimos la acción de cerrar sesión
+) {
     val navController = rememberNavController()
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
 
-    // 2. Observamos la ruta actual para saber que item del menu resaltar
+    // FORZAMOS que inicie CERRADO (Closed)
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    // Determinamos si estamos en una pantalla de autenticación
-    val isAuthScreen = currentRoute == AppRoutes.LOGIN_SCREEN || currentRoute == AppRoutes.REGISTER_SCREEN
-
     ModalNavigationDrawer(
         drawerState = drawerState,
-        gesturesEnabled = !isAuthScreen, // Deshabilitar gestos del drawer en login/registro
+        gesturesEnabled = true,
         drawerContent = {
-            if (!isAuthScreen) { // Opcional: no mostrar contenido si no se debe
-                ModalDrawerSheet {
-                    // 3. Contenido del menú lateral (los botones)
-                    Text("Perfulandia", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
+            ModalDrawerSheet {
+                Text(
+                    "Perfulandia",
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
 
-                    NavigationDrawerItem(
-                        label = { Text("Inicio") },
-                        selected = currentRoute == AppRoutes.HOME_SCREEN,
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                            navController.navigate(AppRoutes.HOME_SCREEN)
-                        }
-                    )
-                    NavigationDrawerItem(
-                        label = { Text("Nosotros") },
-                        selected = currentRoute == AppRoutes.ABOUT_SCREEN,
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                            navController.navigate(AppRoutes.ABOUT_SCREEN)
-                        }
-                    )
-                    NavigationDrawerItem(
-                        label = { Text("Contacto") },
-                        selected = currentRoute == AppRoutes.CONTACT_SCREEN,
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                            navController.navigate(AppRoutes.CONTACT_SCREEN)
-                        }
-                    )
-                }
+                HorizontalDivider() // Una línea bonita
+
+                // Ítems de Navegación
+                NavigationDrawerItem(
+                    label = { Text("Inicio") },
+                    selected = currentRoute == AppRoutes.HOME_SCREEN,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate(AppRoutes.HOME_SCREEN)
+                    }
+                )
+                NavigationDrawerItem(
+                    label = { Text("Nosotros") },
+                    selected = currentRoute == AppRoutes.ABOUT_SCREEN,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate(AppRoutes.ABOUT_SCREEN)
+                    }
+                )
+                NavigationDrawerItem(
+                    label = { Text("Contacto") },
+                    selected = currentRoute == AppRoutes.CONTACT_SCREEN,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate(AppRoutes.CONTACT_SCREEN)
+                    }
+                )
+
+                Spacer(modifier = Modifier.weight(1f)) // Empuja lo siguiente al fondo
+                HorizontalDivider()
+
+                // Botón de CERRAR SESIÓN
+                NavigationDrawerItem(
+                    label = { Text("Cerrar sesión") },
+                    icon = { Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null) },
+                    selected = false,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        onSignOut() // Llamamos a la acción de salir
+                    }
+                )
             }
         }
     ) {
-        // 4. El Scaffold principal que contiene la TopBar y el contenido de las pantallas
         Scaffold(
             topBar = {
-                if (!isAuthScreen) { // Solo mostrar TopBar si NO estamos en login/registro
-                    PerfulandiaTopBar(
-                        onMenuClick = {
-                            // El botón de hamburguesa AHORA SIEMPRE abre el menú
-                            scope.launch {
-                                drawerState.open()
-                            }
-                        },
-                        onSearchClick = { navController.navigate(AppRoutes.SEARCH_SCREEN) },
-                        onCartClick = { navController.navigate(AppRoutes.CART_SCREEN) }
-                    )
-                }
+                PerfulandiaTopBar(
+                    onMenuClick = { scope.launch { drawerState.open() } },
+                    onSearchClick = { navController.navigate(AppRoutes.SEARCH_SCREEN) },
+                    onCartClick = { navController.navigate(AppRoutes.CART_SCREEN) }
+                )
             }
         ) { paddingValues ->
-            // 5. Aquí se mostrarán todas tus pantallas
             AppNavigation(
                 navController,
                 Modifier.padding(paddingValues)
@@ -97,7 +107,6 @@ fun MainScaffold() {
     }
 }
 
-// Moveremos la TopBar a este archivo, ya que es un componente principal
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PerfulandiaTopBar(
@@ -106,7 +115,7 @@ fun PerfulandiaTopBar(
     onCartClick: () -> Unit
 ) {
     TopAppBar(
-        title = { Text("Perfulandia") }, // Título simplificado
+        title = { Text("Perfulandia") },
         navigationIcon = {
             IconButton(onClick = onMenuClick) {
                 Icon(Icons.Default.Menu, contentDescription = "Menú")
@@ -127,6 +136,6 @@ fun PerfulandiaTopBar(
 @Composable
 fun MainScaffoldPreview() {
     PerfulandiaTheme {
-        MainScaffold()
+        MainScaffold(onSignOut = {})
     }
 }

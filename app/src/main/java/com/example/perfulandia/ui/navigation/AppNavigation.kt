@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.perfulandia.catalogo.Product
 import com.example.perfulandia.ui.cart.ShoppingCartScreen
 import com.example.perfulandia.ui.home.AboutScreen
 import com.example.perfulandia.ui.home.ContactScreen
@@ -21,40 +22,23 @@ object AppRoutes {
     const val ABOUT_SCREEN = "about"
     const val CONTACT_SCREEN = "contact"
     const val PRODUCT_DETAIL_SCREEN = "product_detail"
-    const val LOGIN_SCREEN = "login"
-    const val REGISTER_SCREEN = "register"
+    // Eliminamos LOGIN y REGISTER de aquí porque los maneja MainActivity
 }
 
 @Composable
 fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
         navController = navController,
-        startDestination = AppRoutes.LOGIN_SCREEN,
-        modifier = modifier // Aplica el padding del Scaffold
+        // CORRECCIÓN CLAVE: Al entrar aquí, ya estamos logueados, así que vamos directo al Home
+        startDestination = AppRoutes.HOME_SCREEN,
+        modifier = modifier
     ) {
-        composable(route = AppRoutes.LOGIN_SCREEN) {
-            com.example.perfulandia.ui.auth.LoginScreen(
-                onNavigateToRegister = { navController.navigate(AppRoutes.REGISTER_SCREEN) },
-                onLoginSuccess = {
-                    navController.navigate(AppRoutes.HOME_SCREEN) {
-                        popUpTo(AppRoutes.LOGIN_SCREEN) { inclusive = true }
-                    }
-                }
-            )
-        }
-        composable(route = AppRoutes.REGISTER_SCREEN) {
-            com.example.perfulandia.ui.auth.RegistrationScreen(
-                onNavigateToLogin = { navController.navigate(AppRoutes.LOGIN_SCREEN) },
-                onRegistrationSuccess = {
-                    navController.navigate(AppRoutes.HOME_SCREEN) {
-                        popUpTo(AppRoutes.LOGIN_SCREEN) { inclusive = true }
-                    }
-                }
-            )
-        }
+        // --- HOME (Ahora es la pantalla principal) ---
         composable(route = AppRoutes.HOME_SCREEN) {
             HomeScreen(navController)
         }
+
+        // --- OTRAS PANTALLAS DEL MENÚ ---
         composable(route = AppRoutes.SEARCH_SCREEN) {
             SearchResultsScreen(navController)
         }
@@ -67,11 +51,15 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
         composable(route = AppRoutes.CONTACT_SCREEN) {
             ContactScreen()
         }
+
+        // --- DETALLE DE PRODUCTO ---
         composable(
             route = "${AppRoutes.PRODUCT_DETAIL_SCREEN}/{productId}",
-            arguments = listOf(navArgument("productId") { type = NavType.IntType })
+            arguments = listOf(navArgument("productId") { type = NavType.LongType })
         ) { backStackEntry ->
-            val productId = backStackEntry.arguments?.getInt("productId") ?: 0
+            val productId = backStackEntry.arguments?.getLong("productId") ?: 0L
+
+            // Llamamos a la pantalla pasando SOLO el ID (que ya arreglamos antes)
             ProductDetailScreen(productId = productId, navController = navController)
         }
     }

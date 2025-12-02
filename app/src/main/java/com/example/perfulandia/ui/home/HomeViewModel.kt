@@ -1,36 +1,39 @@
 package com.example.perfulandia.ui.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.perfulandia.catalogo.Product
+import com.example.perfulandia.repository.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
+    private val repository = ProductRepository()
 
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    // Estas son las variables que busca tu HomeScreen
+    private val _products = MutableStateFlow<List<Product>>(emptyList())
+    val products: StateFlow<List<Product>> = _products
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     init {
-        loadProducts()
+        fetchProducts()
     }
 
-    private fun loadProducts() {
-        // Simulate data loading
-        val productList = listOf(
-            Product(1, "Tommy Hilfinger Impact", 35000.0, 20),
-            Product(2, "Versace Eros Flame", 55000.0, 10),
-            Product(3, "Sauvage Elixir", 110000.0, 30),
-            Product(4, "Bleu de Chanel", 120000.0, 15),
-            Product(5, "Acqua di Gio", 90000.0, 25),
-            Product(6, "One Million", 85000.0, 40)
-        )
-        _uiState.value = HomeUiState.Success(productList)
-    }
-}
+    fun fetchProducts() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = repository.getProducts() // Asegúrate que tu repositorio devuelva Result<List<Product>>
 
-sealed class HomeUiState {
-    object Loading : HomeUiState()
-    data class Success(val products: List<Product>) : HomeUiState()
-    data class Error(val message: String) : HomeUiState()
+            // Si tu repositorio devuelve la lista directa (sin Result), usa:
+            // _products.value = result
+
+            // Si usa Result:
+            result.onSuccess { list -> _products.value = list }
+
+            _isLoading.value = false
+        }
+    }
 }

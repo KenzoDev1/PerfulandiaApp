@@ -32,7 +32,7 @@ import com.example.perfulandia.ui.theme.PerfulandiaTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailScreen(
-    productId: Int,
+    productId: Long,
     navController: NavController,
     viewModel: ProductDetailViewModel = viewModel()
 ) {
@@ -112,9 +112,9 @@ fun ProductDetailScreen(
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onBackground
                         )
-                        
+
                         Spacer(modifier = Modifier.height(8.dp))
-                        
+
                         Text(
                             text = "$${product.price.toInt()}",
                             style = MaterialTheme.typography.headlineSmall,
@@ -152,14 +152,14 @@ fun ProductDetailScreen(
                             ) {
                                 Icon(Icons.Default.Remove, contentDescription = "Decrease", tint = Gold)
                             }
-                            
+
                             Text(
                                 text = quantity.toString(),
                                 style = MaterialTheme.typography.titleLarge,
                                 color = MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier.padding(horizontal = 24.dp)
                             )
-                            
+
                             IconButton(
                                 onClick = { quantity++ },
                                 modifier = Modifier.border(1.dp, Gold, RoundedCornerShape(8.dp))
