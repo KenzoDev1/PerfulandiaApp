@@ -20,11 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.perfulandia.catalogo.Product
 import com.example.perfulandia.ui.theme.Gold
 import com.example.perfulandia.ui.theme.GoldDim
 import com.example.perfulandia.ui.theme.PerfulandiaTheme
@@ -43,150 +41,154 @@ fun ProductDetailScreen(
     val uiState by viewModel.uiState.collectAsState()
     var quantity by remember { mutableStateOf(1) }
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        // Se tuvo que realizar un cambio en el TopAppBar
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Gold)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when (val state = uiState) {
-                is ProductDetailUiState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = Gold
-                    )
-                }
-                is ProductDetailUiState.Error -> {
-                    Text(
-                        text = state.message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                is ProductDetailUiState.Success -> {
-                    val product = state.product
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(16.dp)
-                    ) {
-                        // Product Image Placeholder
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(350.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(Color.DarkGray)
-                                .border(1.dp, GoldDim, RoundedCornerShape(16.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = product.name.first().toString(),
-                                style = MaterialTheme.typography.displayLarge,
-                                color = Gold.copy(alpha = 0.5f)
-                            )
+    com.example.perfulandia.ui.components.BackgroundWrapper(
+        backgroundImageId = com.example.perfulandia.R.drawable.background_elegant
+    ) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            // Se tuvo que realizar un cambio en el TopAppBar
+            topBar = {
+                TopAppBar(
+                    title = {},
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Gold)
                         }
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        // Title and Price
-                        Text(
-                            text = product.name,
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Text(
-                            text = "$${product.price.toInt()}",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = Gold,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        // Description
-                        Text(
-                            text = "Description",
-                            style = MaterialTheme.typography.titleMedium,
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
+                    )
+                )
+            }
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                when (val state = uiState) {
+                    is ProductDetailUiState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
                             color = Gold
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    is ProductDetailUiState.Error -> {
                         Text(
-                            text = "Experience the essence of luxury with this exclusive fragrance. Crafted with the finest ingredients, it offers a long-lasting scent that embodies elegance and sophistication.",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
-                            textAlign = TextAlign.Justify
+                            text = state.message,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.align(Alignment.Center)
                         )
-
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        // Quantity Selector
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
+                    }
+                    is ProductDetailUiState.Success -> {
+                        val product = state.product
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .padding(16.dp)
                         ) {
-                            IconButton(
-                                onClick = { if (quantity > 1) quantity-- },
-                                modifier = Modifier.border(1.dp, Gold, RoundedCornerShape(8.dp))
+                            // Product Image Placeholder
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(350.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color.DarkGray)
+                                    .border(1.dp, GoldDim, RoundedCornerShape(16.dp)),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Icon(Icons.Default.Remove, contentDescription = "Decrease", tint = Gold)
+                                Text(
+                                    text = product.name.first().toString(),
+                                    style = MaterialTheme.typography.displayLarge,
+                                    color = Gold.copy(alpha = 0.5f)
+                                )
                             }
 
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            // Title and Price
                             Text(
-                                text = quantity.toString(),
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                modifier = Modifier.padding(horizontal = 24.dp)
+                                text = product.name,
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = MaterialTheme.colorScheme.onBackground
                             )
 
-                            IconButton(
-                                onClick = { quantity++ },
-                                modifier = Modifier.border(1.dp, Gold, RoundedCornerShape(8.dp))
-                            ) {
-                                Icon(Icons.Default.Add, contentDescription = "Increase", tint = Gold)
-                            }
-                        }
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        // Add to Cart Button
-                        Button(
-                            onClick = { viewModel.addToCart(product, quantity) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Gold,
-                                contentColor = Color.Black
-                            ),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
                             Text(
-                                text = "ADD TO CART",
-                                style = MaterialTheme.typography.titleMedium,
+                                text = "$${product.price.toInt()}",
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = Gold,
                                 fontWeight = FontWeight.Bold
                             )
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            // Description
+                            Text(
+                                text = "Description",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Gold
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Experience the essence of luxury with this exclusive fragrance. Crafted with the finest ingredients, it offers a long-lasting scent that embodies elegance and sophistication.",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+                                textAlign = TextAlign.Justify
+                            )
+
+                            Spacer(modifier = Modifier.height(32.dp))
+
+                            // Quantity Selector
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                IconButton(
+                                    onClick = { if (quantity > 1) quantity-- },
+                                    modifier = Modifier.border(1.dp, Gold, RoundedCornerShape(8.dp))
+                                ) {
+                                    Icon(Icons.Default.Remove, contentDescription = "Decrease", tint = Gold)
+                                }
+
+                                Text(
+                                    text = quantity.toString(),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    modifier = Modifier.padding(horizontal = 24.dp)
+                                )
+
+                                IconButton(
+                                    onClick = { quantity++ },
+                                    modifier = Modifier.border(1.dp, Gold, RoundedCornerShape(8.dp))
+                                ) {
+                                    Icon(Icons.Default.Add, contentDescription = "Increase", tint = Gold)
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(32.dp))
+
+                            // Add to Cart Button
+                            Button(
+                                onClick = { viewModel.addToCart(product, quantity) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Gold,
+                                    contentColor = Color.Black
+                                ),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text(
+                                    text = "ADD TO CART",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }

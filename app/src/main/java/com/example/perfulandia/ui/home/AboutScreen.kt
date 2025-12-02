@@ -9,29 +9,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.perfulandia.ui.components.BackgroundWrapper
+import com.example.perfulandia.R
 
 @Composable
 fun AboutScreen() {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        item {
-            SectionTitle(title = "Nosotros")
-            InfoCard(text = "Información sobre la empresa Perfulandia.")
-            Spacer(modifier = Modifier.height(24.dp))
-            SectionTitle(title = "Equipo")
-            TeamMember(name = "Carlos Bittner", role = "Desarrollador")
-            TeamMember(name = "Vicente Alarcon", role = "Diseñador")
-            TeamMember(name = "Francisco Aranguiz", role = "Desarrollador")
-            Spacer(modifier = Modifier.height(24.dp))
-            SectionTitle(title = "Nuestras oficinas")
-            InfoCard(text = "Puerto Montt\nAvenida Austral")
-            Spacer(modifier = Modifier.height(24.dp))
-            SectionTitle(title = "Contáctanos aquí")
-            InfoCard(text = "Email: contacto@perfulandia.cl\nTeléfono: +569 1234 5678")
+    BackgroundWrapper(backgroundImageId = R.drawable.background_elegant) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                SectionTitle(title = "Nosotros")
+                InfoCard(text = "Información sobre la empresa Perfulandia.")
+                Spacer(modifier = Modifier.height(24.dp))
+                SectionTitle(title = "Equipo")
+                TeamMember(name = "Carlos Bittner", role = "Desarrollador")
+                TeamMember(name = "Vicente Alarcon", role = "Diseñador")
+                TeamMember(name = "Francisco Aranguiz", role = "Desarrollador")
+                Spacer(modifier = Modifier.height(24.dp))
+                SectionTitle(title = "Nuestras oficinas")
+                InfoCard(text = "Puerto Montt\nAvenida Austral")
+                Spacer(modifier = Modifier.height(24.dp))
+                SectionTitle(title = "Contáctanos aquí")
+                InfoCard(text = "Email: contacto@perfulandia.cl\nTeléfono: +569 1234 5678")
+            }
         }
     }
 }

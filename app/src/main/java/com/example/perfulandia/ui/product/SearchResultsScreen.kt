@@ -35,93 +35,97 @@ fun SearchResultsScreen(
     // CORRECCIÓN 1: Manejamos el texto aquí localmente para no complicar el ViewModel
     var query by remember { mutableStateOf("") }
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            // Search Bar (Tu diseño intacto)
-            TextField(
-                value = query,
-                onValueChange = {
-                    query = it
-                    viewModel.searchProducts(it) // Llamamos a la búsqueda real
-                },
+    com.example.perfulandia.ui.components.BackgroundWrapper(
+        backgroundImageId = com.example.perfulandia.R.drawable.background_collection
+    ) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                // Search Bar (Tu diseño intacto)
+                TextField(
+                    value = query,
+                    onValueChange = {
+                        query = it
+                        viewModel.searchProducts(it) // Llamamos a la búsqueda real
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    placeholder = { Text("Search perfumes...", color = Color.Gray) },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = Gold) },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        disabledContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedIndicatorColor = Gold,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    singleLine = true
+                )
+            }
+        ) { paddingValues ->
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                placeholder = { Text("Search perfumes...", color = Color.Gray) },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = Gold) },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedIndicatorColor = Gold,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
-                ),
-                shape = RoundedCornerShape(8.dp),
-                singleLine = true
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-        ) {
-            // CORRECCIÓN 2: Adaptamos el 'when' a los estados del nuevo ViewModel
-            when (val state = uiState) {
-                is SearchUiState.Idle -> { // Antes era Initial
-                    Text(
-                        text = "Start typing to search...",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Gray,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                is SearchUiState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = Gold
-                    )
-                }
-                is SearchUiState.Error -> {
-                    Text(
-                        text = state.message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                is SearchUiState.Success -> {
-                    // Verificamos aquí si la lista está vacía
-                    if (state.products.isEmpty()) {
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
+            ) {
+                // CORRECCIÓN 2: Adaptamos el 'when' a los estados del nuevo ViewModel
+                when (val state = uiState) {
+                    is SearchUiState.Idle -> { // Antes era Initial
                         Text(
-                            text = "No products found.",
+                            text = "Start typing to search...",
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color.Gray,
                             modifier = Modifier.align(Alignment.Center)
                         )
-                    } else {
-                        // Si hay productos, mostramos tu diseño de resultados
-                        Column {
+                    }
+                    is SearchUiState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = Gold
+                        )
+                    }
+                    is SearchUiState.Error -> {
+                        Text(
+                            text = state.message,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                    is SearchUiState.Success -> {
+                        // Verificamos aquí si la lista está vacía
+                        if (state.products.isEmpty()) {
                             Text(
-                                text = "Results",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = Gold,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(vertical = 8.dp)
+                                text = "No products found.",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Gray,
+                                modifier = Modifier.align(Alignment.Center)
                             )
+                        } else {
+                            // Si hay productos, mostramos tu diseño de resultados
+                            Column {
+                                Text(
+                                    text = "Results",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = Gold,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
 
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(2),
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(16.dp),
-                                contentPadding = PaddingValues(bottom = 16.dp)
-                            ) {
-                                items(state.products) { product ->
-                                    ProductCard(product = product) {
-                                        navController.navigate("${AppRoutes.PRODUCT_DETAIL_SCREEN}/${product.id}")
+                                LazyVerticalGrid(
+                                    columns = GridCells.Fixed(2),
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                                    contentPadding = PaddingValues(bottom = 16.dp)
+                                ) {
+                                    items(state.products) { product ->
+                                        ProductCard(product = product) {
+                                            navController.navigate("${AppRoutes.PRODUCT_DETAIL_SCREEN}/${product.id}")
+                                        }
                                     }
                                 }
                             }
