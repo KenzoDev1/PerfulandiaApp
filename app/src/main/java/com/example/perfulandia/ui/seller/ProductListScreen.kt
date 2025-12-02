@@ -21,12 +21,44 @@ import com.example.perfulandia.ui.theme.PerfulandiaTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductListScreen() {
-    // Datos de ejemplo para la lista de productos
+    // CORRECCIÓN: Datos de ejemplo actualizados al nuevo modelo Product
     val products = listOf(
-        Product(1, "Versace Eros", 55000.0, 15, ""),
-        Product(2, "Sauvage Dior", 110000.0, 8, ""),
-        Product(3, "Invictus", 45000.0, 25, ""),
-        Product(4, "One Million", 62000.0, 12, ""),
+        Product(
+            id = 1L,
+            name = "Versace Eros",
+            description = "Aromático Fougère para Hombres",
+            price = 55000.0,
+            stock = 15,
+            imageUrl = "",
+            categoryId = 1L
+        ),
+        Product(
+            id = 2L,
+            name = "Sauvage Dior",
+            description = "Fresco, crudo y noble",
+            price = 110000.0,
+            stock = 8,
+            imageUrl = "",
+            categoryId = 1L
+        ),
+        Product(
+            id = 3L,
+            name = "Invictus",
+            description = "El aroma de la victoria",
+            price = 45000.0,
+            stock = 25,
+            imageUrl = "",
+            categoryId = 1L
+        ),
+        Product(
+            id = 4L,
+            name = "One Million",
+            description = "Cuero especiado",
+            price = 62000.0,
+            stock = 12,
+            imageUrl = "",
+            categoryId = 1L
+        )
     )
 
     var searchQuery by remember { mutableStateOf("") }

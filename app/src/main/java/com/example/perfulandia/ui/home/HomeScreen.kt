@@ -1,6 +1,5 @@
 package com.example.perfulandia.ui.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,8 +8,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,16 +15,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -35,13 +28,17 @@ import com.example.perfulandia.catalogo.Product
 import com.example.perfulandia.ui.navigation.AppRoutes
 import com.example.perfulandia.ui.theme.Gold
 import com.example.perfulandia.ui.theme.GoldDim
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = viewModel() // Inyectamos el ViewModel aquí
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    // Escuchamos los datos REALES de la base de datos
+    val products by viewModel.products.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
@@ -53,7 +50,7 @@ fun HomeScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             // Header / Title
             Text(
                 text = "Perfulandia",
@@ -68,19 +65,19 @@ fun HomeScreen(
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            when (val state = uiState) {
-                is HomeUiState.Loading -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = Gold)
-                    }
+            // Lógica de carga: Spinner o Lista
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = Gold)
                 }
-                is HomeUiState.Error -> {
+            } else {
+                if (products.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(text = state.message, color = MaterialTheme.colorScheme.error)
+                        Text("No hay productos disponibles.", color = Color.Gray)
                     }
-                }
-                is HomeUiState.Success -> {
-                    ProductGrid(products = state.products, navController = navController)
+                } else {
+                    // Pasamos la lista real 'products' a la grilla
+                    ProductGrid(products = products, navController = navController)
                 }
             }
         }
@@ -119,7 +116,7 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
             modifier = Modifier.padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Image Placeholder with Gold Border
+            // Placeholder de imagen
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -130,14 +127,14 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = product.name.first().toString(),
+                    text = product.name.take(1).uppercase(),
                     style = MaterialTheme.typography.displayMedium,
                     color = Gold.copy(alpha = 0.5f)
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             Text(
                 text = product.name,
                 style = MaterialTheme.typography.titleSmall,
@@ -146,19 +143,19 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center
             )
-            
+
             Spacer(modifier = Modifier.height(4.dp))
-            
+
             Text(
                 text = "$${product.price.toInt()}",
                 style = MaterialTheme.typography.titleMedium,
                 color = Gold,
                 fontWeight = FontWeight.Bold
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
-            // Add to Cart Button (Visual only for now)
+
+            // Botón visual (sin lógica de carrito aún)
             Button(
                 onClick = { /* TODO: Add to cart */ },
                 colors = ButtonDefaults.buttonColors(
@@ -178,6 +175,4 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
 @Preview(showBackground = true, backgroundColor = 0xFF121212)
 @Composable
 fun HomeScreenPreview() {
-    val navController = rememberNavController()
-    HomeScreen(navController = navController)
 }

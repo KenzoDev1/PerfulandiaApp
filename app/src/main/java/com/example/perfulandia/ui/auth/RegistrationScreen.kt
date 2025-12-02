@@ -15,8 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun RegistrationScreen(
     viewModel: LoginViewModel = viewModel(),
-    onNavigateToLogin: () -> Unit,
-    onRegistrationSuccess: () -> Unit // Este ya no lo usaremos realmente, pero lo dejamos por compatibilidad
+    onNavigateToLogin: () -> Unit
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()

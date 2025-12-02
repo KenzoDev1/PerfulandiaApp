@@ -31,31 +31,31 @@ fun SearchResultsScreen(
     viewModel: SearchViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val query by viewModel.query.collectAsState()
+
+    // CORRECCIÓN 1: Manejamos el texto aquí localmente para no complicar el ViewModel
+    var query by remember { mutableStateOf("") }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            // Search Bar
+            // Search Bar (Tu diseño intacto)
             TextField(
                 value = query,
-                onValueChange = viewModel::onQueryChange,
+                onValueChange = {
+                    query = it
+                    viewModel.searchProducts(it) // Llamamos a la búsqueda real
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                 placeholder = { Text("Search perfumes...", color = Color.Gray) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = Gold) },
                 colors = TextFieldDefaults.colors(
-                    // Reemplaza 'containerColor' (tienes que definir ambos estados)
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
-
-                    // Estos se mantienen igual
-                    focusedIndicatorColor = Gold, // Asegúrate de que 'Gold' esté importado o definido
+                    focusedIndicatorColor = Gold,
                     unfocusedIndicatorColor = Color.Transparent,
-
-                    // Reemplaza 'textColor' (define ambos estados)
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 ),
@@ -70,8 +70,9 @@ fun SearchResultsScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
         ) {
+            // CORRECCIÓN 2: Adaptamos el 'when' a los estados del nuevo ViewModel
             when (val state = uiState) {
-                is SearchUiState.Initial -> {
+                is SearchUiState.Idle -> { // Antes era Initial
                     Text(
                         text = "Start typing to search...",
                         style = MaterialTheme.typography.bodyLarge,
@@ -85,14 +86,6 @@ fun SearchResultsScreen(
                         color = Gold
                     )
                 }
-                is SearchUiState.Empty -> {
-                    Text(
-                        text = "No products found.",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Gray,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
                 is SearchUiState.Error -> {
                     Text(
                         text = state.message,
@@ -101,24 +94,35 @@ fun SearchResultsScreen(
                     )
                 }
                 is SearchUiState.Success -> {
-                    Column {
+                    // Verificamos aquí si la lista está vacía
+                    if (state.products.isEmpty()) {
                         Text(
-                            text = "Results",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = Gold,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                            text = "No products found.",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Gray,
+                            modifier = Modifier.align(Alignment.Center)
                         )
-                        
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                            contentPadding = PaddingValues(bottom = 16.dp)
-                        ) {
-                            items(state.products) { product ->
-                                ProductCard(product = product) {
-                                    navController.navigate("${AppRoutes.PRODUCT_DETAIL_SCREEN}/${product.id}")
+                    } else {
+                        // Si hay productos, mostramos tu diseño de resultados
+                        Column {
+                            Text(
+                                text = "Results",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Gold,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(2),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
+                                contentPadding = PaddingValues(bottom = 16.dp)
+                            ) {
+                                items(state.products) { product ->
+                                    ProductCard(product = product) {
+                                        navController.navigate("${AppRoutes.PRODUCT_DETAIL_SCREEN}/${product.id}")
+                                    }
                                 }
                             }
                         }
