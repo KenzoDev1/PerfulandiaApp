@@ -51,7 +51,7 @@ fun SearchResultsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    placeholder = { Text("Search perfumes...", color = Color.Gray) },
+                    placeholder = { Text("Buscar perfumes...", color = Color.Gray) },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = Gold) },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -77,7 +77,7 @@ fun SearchResultsScreen(
                 when (val state = uiState) {
                     is SearchUiState.Idle -> { // Antes era Initial
                         Text(
-                            text = "Start typing to search...",
+                            text = "Empezando a buscar...",
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color.Gray,
                             modifier = Modifier.align(Alignment.Center)

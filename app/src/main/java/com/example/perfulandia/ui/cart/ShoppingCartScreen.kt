@@ -81,13 +81,13 @@ fun EmptyCartView() {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "Your Cart is Empty",
+                text = "Tu carrito esta vacio",
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Explore our exclusive fragrances.",
+                text = "Revisa nuestras fragancias exclusivas",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Gold
             )
@@ -107,7 +107,7 @@ fun CartContent(
             .padding(16.dp)
     ) {
         Text(
-            text = "Shopping Cart",
+            text = "Carrito",
             style = MaterialTheme.typography.headlineMedium,
             color = Gold,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -229,7 +229,7 @@ fun OrderSummary(cartItems: List<CartItem>) {
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
-                text = "Order Summary",
+                text = "Orden",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -241,7 +241,7 @@ fun OrderSummary(cartItems: List<CartItem>) {
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Shipping", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Envio", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("$${shippingCost.toInt()}", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             
@@ -265,7 +265,7 @@ fun OrderSummary(cartItems: List<CartItem>) {
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text("CHECKOUT", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text("COMPRAR", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             }
         }
     }

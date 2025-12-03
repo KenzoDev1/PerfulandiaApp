@@ -188,7 +188,7 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp),
                 modifier = Modifier.height(32.dp)
             ) {
-                Text("Add", style = MaterialTheme.typography.labelMedium)
+                Text("Agregar", style = MaterialTheme.typography.labelMedium)
             }
         }
     }
