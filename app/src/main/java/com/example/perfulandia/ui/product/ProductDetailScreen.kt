@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.perfulandia.ui.theme.Gold
 import com.example.perfulandia.ui.theme.GoldDim
 import com.example.perfulandia.ui.theme.PerfulandiaTheme
@@ -94,15 +96,33 @@ fun ProductDetailScreen(
                                     .fillMaxWidth()
                                     .height(350.dp)
                                     .clip(RoundedCornerShape(16.dp))
-                                    .background(Color.DarkGray)
+                                    .background(Color.White) // Fondo blanco por si la imagen es PNG transparente
                                     .border(1.dp, GoldDim, RoundedCornerShape(16.dp)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = product.name.first().toString(),
-                                    style = MaterialTheme.typography.displayLarge,
-                                    color = Gold.copy(alpha = 0.5f)
-                                )
+                                if (product.imageUrl.isNullOrBlank()) {
+                                    // Si NO hay link, mostramos la caja gris con la letra (tu diseño original)
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(Color.DarkGray),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = product.name.take(1).uppercase(),
+                                            style = MaterialTheme.typography.displayLarge,
+                                            color = Gold.copy(alpha = 0.5f)
+                                        )
+                                    }
+                                } else {
+                                    // Si HAY link, cargamos la foto real con Coil
+                                    AsyncImage(
+                                        model = product.imageUrl,
+                                        contentDescription = product.name,
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Fit
+                                    )
+                                }
                             }
 
                             Spacer(modifier = Modifier.height(24.dp))
@@ -133,7 +153,7 @@ fun ProductDetailScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Experience the essence of luxury with this exclusive fragrance. Crafted with the finest ingredients, it offers a long-lasting scent that embodies elegance and sophistication.",
+                                text = if (product.description.isNullOrBlank()) "Sin descripción disponible." else product.description,
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                                 textAlign = TextAlign.Justify

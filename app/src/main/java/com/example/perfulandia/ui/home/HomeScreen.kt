@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,7 +28,7 @@ import com.example.perfulandia.catalogo.Product
 import com.example.perfulandia.ui.navigation.AppRoutes
 import com.example.perfulandia.ui.theme.Gold
 import com.example.perfulandia.ui.theme.GoldDim
-
+import coil.compose.AsyncImage
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -117,25 +118,44 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
             modifier = Modifier.padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Placeholder de imagen
+            // IMAGEN DEL PRODUCTO (Actualizado)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)
+                    .aspectRatio(1f) // Mantiene el cuadro cuadrado
                     .clip(RoundedCornerShape(4.dp))
-                    .background(Color.DarkGray)
+                    .background(Color.White) // Fondo blanco para que resalte la imagen
                     .border(1.dp, GoldDim, RoundedCornerShape(4.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = product.name.take(1).uppercase(),
-                    style = MaterialTheme.typography.displayMedium,
-                    color = Gold.copy(alpha = 0.5f)
-                )
+                if (product.imageUrl.isNullOrBlank()) {
+                    // Placeholder si no hay imagen (Caja Gris con Letra)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.DarkGray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = product.name.take(1).uppercase(),
+                            style = MaterialTheme.typography.displayMedium,
+                            color = Gold.copy(alpha = 0.5f)
+                        )
+                    }
+                } else {
+                    // Imagen Real (Ajustada con FIT)
+                    AsyncImage(
+                        model = product.imageUrl,
+                        contentDescription = product.name,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit // <--- ESTO HACE QUE CALCE PERFECTO
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Nombre del Producto
             Text(
                 text = product.name,
                 style = MaterialTheme.typography.titleSmall,
@@ -147,6 +167,7 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(4.dp))
 
+            // Precio
             Text(
                 text = "$${product.price.toInt()}",
                 style = MaterialTheme.typography.titleMedium,
@@ -156,7 +177,7 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Botón visual (sin lógica de carrito aún)
+            // Botón visual
             Button(
                 onClick = { /* TODO: Add to cart */ },
                 colors = ButtonDefaults.buttonColors(
