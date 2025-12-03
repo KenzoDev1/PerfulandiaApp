@@ -57,4 +57,4 @@ Este proyecto está construido 100% en Kotlin y utiliza las últimas tecnología
 - Gradle (Kotlin DSL): Gestión de dependencias y configuración del proyecto usando ```build.gradle.kts``` y ```libs.versions.toml```.
 
 ## LINK DE PLANIFICACION (TRELLO)
-https://trello.com/invite/b/68f810e029ae05164402ee02/ATTI436ad943530cbc6478cc2b268f900eeaE1A0483A/tablero-perfulandia
+https://trello.com/invite/b/692f7e35279b0994d18a5b2d/ATTIc895f168fa224c6fe701fc66c8cecde5D7CF4E6F/perfulandiaapp
